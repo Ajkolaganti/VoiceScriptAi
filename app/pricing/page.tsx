@@ -15,9 +15,9 @@ const plans = [
     name: 'Free',
     price: '$0',
     description: 'Perfect for trying out VoiceScript AI',
-    credits: 10,
+    credits: 5,
     features: [
-      '10 free credits',
+      '5 free credits',
       'Files up to 1 minute long',
       'Basic transcription features',
       'Standard support',

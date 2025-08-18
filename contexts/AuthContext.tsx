@@ -74,14 +74,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           uid,
           email: email || user?.email || '',
           subscription: 'free',
-          credits: 10, // 10 free credits for new users
+          credits: 5, // 5 free credits for new users
           maxFileDuration: 1, // 1 minute for free tier
           createdAt: new Date().toISOString(),
         };
         console.log('Creating new user profile:', newProfile);
         await setDoc(doc(db, 'users', uid), newProfile);
         setUserProfile(newProfile);
-        console.log('Created new user profile with 10 credits:', newProfile);
+        console.log('Created new user profile with 5 credits:', newProfile);
       }
     } catch (error) {
       console.error('Error loading user profile:', error);

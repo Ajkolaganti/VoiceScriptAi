@@ -185,12 +185,12 @@ Powered by Deepgram Nova-2 Model`;
         </div>
         
         {/* Actions */}
-        <div className="p-6 border-t border-gray-200">
+        <div className="p-6 border-t border-gray-200 bg-white">
           <div className="flex flex-col sm:flex-row gap-3">
             <button 
               onClick={handleCopy}
               disabled={!result?.transcript}
-              className="flex-1 flex items-center justify-center space-x-2 professional-btn px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center space-x-2 professional-btn px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               type="button"
             >
               {copied ? (
@@ -209,7 +209,7 @@ Powered by Deepgram Nova-2 Model`;
             <button 
               onClick={handleDownload}
               disabled={!result?.transcript}
-              className="flex-1 flex items-center justify-center space-x-2 professional-btn-secondary px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center space-x-2 professional-btn-secondary px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               type="button"
             >
               <Download className="h-5 w-5" />
