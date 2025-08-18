@@ -208,9 +208,9 @@ function AppPageContent() {
               <Badge variant="secondary" className="capitalize">
                 {userProfile.subscription}
               </Badge>
-              <div className="flex items-center space-x-1 text-sm text-gray-600">
-                <Coins className="h-4 w-4 text-yellow-500" />
-                <span>{userProfile.credits} credits</span>
+              <div className="flex items-center space-x-1 text-sm text-gray-600 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200">
+                <Coins className="h-4 w-4 text-yellow-600" />
+                <span className="font-medium text-yellow-700">{userProfile.credits} credits</span>
               </div>
             </div>
           )}
@@ -221,6 +221,13 @@ function AppPageContent() {
           </div>
           
           <div className="flex items-center space-x-2">
+            <Link href="/account">
+              <Button variant="outline" size="sm" className="flex items-center space-x-1">
+                <User className="h-4 w-4" />
+                <span>Account</span>
+              </Button>
+            </Link>
+            
             <Link href="/pricing">
               <Button variant="outline" size="sm" className="flex items-center space-x-1">
                 <Crown className="h-4 w-4" />
@@ -277,15 +284,37 @@ function AppPageContent() {
 
             {/* Plan Info */}
             {userProfile && (
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg max-w-md mx-auto">
-                <h3 className="font-semibold text-blue-900 mb-2">Your Plan: {userProfile.subscription}</h3>
-                <div className="text-sm text-blue-700 space-y-1">
-                  <p>• Max file duration: {userProfile.maxFileDuration} minutes</p>
-                  <p>• Credits remaining: {userProfile.credits}</p>
-                  {creditInfo && fileDuration && (
-                    <p>• This file will cost: {Math.ceil(fileDuration)} credits</p>
-                  )}
+              <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 max-w-lg mx-auto">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-blue-900 text-lg">Your Plan: {userProfile.subscription}</h3>
+                  <Badge variant="secondary" className="capitalize">
+                    {userProfile.subscription}
+                  </Badge>
                 </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+                    <div className="flex items-center justify-center space-x-1 mb-1">
+                      <Coins className="h-4 w-4 text-yellow-600" />
+                      <span className="text-xs text-gray-600">Credits</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-900">{userProfile.credits}</p>
+                  </div>
+                  <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+                    <div className="flex items-center justify-center space-x-1 mb-1">
+                      <span className="text-xs text-gray-600">Max Duration</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-900">{userProfile.maxFileDuration}m</p>
+                  </div>
+                </div>
+                
+                {creditInfo && fileDuration && (
+                  <div className="bg-blue-100 rounded-lg p-3 text-center">
+                    <p className="text-sm text-blue-800">
+                      <span className="font-medium">This file will cost:</span> {Math.ceil(fileDuration)} credits
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

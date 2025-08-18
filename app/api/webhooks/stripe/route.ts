@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 // Check if Stripe secret key is available
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -140,9 +140,26 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   try {
     // Find user by subscription ID and downgrade to free
-    // This would require a query to find the user, but for simplicity,
-    // we'll handle this in the checkout session completed event
-    console.log('Subscription deleted:', subscription.id);
+    // We need to query Firestore to find the user with this subscription ID
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('stripeSubscriptionId', '==', subscription.id));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userId = userDoc.id;
+      
+      // Update user profile to free plan
+      await updateDoc(doc(db, 'users', userId), {
+        subscription: 'free',
+        maxFileDuration: 1, // Reset to free plan limits
+        // Keep existing credits
+      });
+      
+      console.log(`User ${userId} downgraded to free plan after subscription deletion`);
+    } else {
+      console.log('No user found with subscription ID:', subscription.id);
+    }
   } catch (error) {
     console.error('Error handling subscription deletion:', error);
   }
