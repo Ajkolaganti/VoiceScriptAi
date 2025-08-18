@@ -21,6 +21,8 @@ interface UserProfile {
   credits: number;
   maxFileDuration: number; // in minutes
   createdAt: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
 }
 
 interface AuthContextType {

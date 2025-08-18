@@ -399,7 +399,7 @@ function AppPageContent() {
             <div className="text-center">
               <button 
                 onClick={handleTranscription}
-                disabled={isTranscribing || (creditInfo && !creditInfo.canUse) || (fileDuration && userProfile && fileDuration > userProfile.maxFileDuration)}
+                disabled={Boolean(isTranscribing || (creditInfo && !creditInfo.canUse) || (fileDuration && userProfile && fileDuration > userProfile.maxFileDuration))}
                 className={`group professional-btn px-10 py-4 rounded-lg font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 mx-auto ${
                   isTranscribing ? 'animate-pulse' : ''
                 }`}

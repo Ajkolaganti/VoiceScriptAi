@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-export default function AccountPage() {
+function AccountPage() {
   const { user, userProfile, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [cancelStatus, setCancelStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
