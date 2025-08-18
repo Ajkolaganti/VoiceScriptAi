@@ -6,6 +6,7 @@ import { ArrowLeft, User, Coins, Crown, CreditCard, AlertTriangle, CheckCircle, 
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -219,10 +220,12 @@ function AccountPage() {
 
               <div className="mt-4 flex space-x-3">
                 <Link href="/pricing">
-                  <Button className="bg-blue-600 hover:bg-blue-700">
-                    <Crown className="h-4 w-4 mr-2" />
-                    Buy More Credits
-                  </Button>
+                  <ShinyButton className="bg-blue-600 text-white">
+                    <span className="flex items-center">
+                      <Crown className="h-4 w-4 mr-2" />
+                      Buy More Credits
+                    </span>
+                  </ShinyButton>
                 </Link>
               </div>
             </CardContent>

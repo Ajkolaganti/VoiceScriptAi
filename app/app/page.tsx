@@ -10,6 +10,7 @@ import StatusModal from '@/components/StatusModal';
 import TranscriptModal from '@/components/TranscriptModal';
 import { BGPattern } from '@/components/ui/bg-pattern';
 import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 
@@ -222,17 +223,21 @@ function AppPageContent() {
           
           <div className="flex items-center space-x-2">
             <Link href="/account">
-              <Button variant="outline" size="sm" className="flex items-center space-x-1">
-                <User className="h-4 w-4" />
-                <span>Account</span>
-              </Button>
+              <ShinyButton className="text-sm">
+                <span className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span>Account</span>
+                </span>
+              </ShinyButton>
             </Link>
             
             <Link href="/pricing">
-              <Button variant="outline" size="sm" className="flex items-center space-x-1">
-                <Crown className="h-4 w-4" />
-                <span>Buy Credits</span>
-              </Button>
+              <ShinyButton className="text-sm">
+                <span className="flex items-center space-x-1">
+                  <Crown className="h-4 w-4" />
+                  <span>Buy Credits</span>
+                </span>
+              </ShinyButton>
             </Link>
             
             <Button 

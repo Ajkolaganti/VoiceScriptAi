@@ -47,9 +47,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('Auth state changed:', user?.email, user?.uid);
       setUser(user);
       if (user) {
-        await loadUserProfile(user.uid);
+        await loadUserProfile(user.uid, user.email || undefined);
       } else {
         setUserProfile(null);
       }
@@ -59,23 +60,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
-  const loadUserProfile = async (uid: string) => {
+  const loadUserProfile = async (uid: string, email?: string) => {
     try {
+      console.log('Loading user profile for:', uid, email);
       const userDoc = await getDoc(doc(db, 'users', uid));
       if (userDoc.exists()) {
-        setUserProfile(userDoc.data() as UserProfile);
+        const profile = userDoc.data() as UserProfile;
+        console.log('Found existing user profile:', profile);
+        setUserProfile(profile);
       } else {
         // Create new user profile
         const newProfile: UserProfile = {
           uid,
-          email: user?.email || '',
+          email: email || user?.email || '',
           subscription: 'free',
           credits: 10, // 10 free credits for new users
           maxFileDuration: 1, // 1 minute for free tier
           createdAt: new Date().toISOString(),
         };
+        console.log('Creating new user profile:', newProfile);
         await setDoc(doc(db, 'users', uid), newProfile);
         setUserProfile(newProfile);
+        console.log('Created new user profile with 10 credits:', newProfile);
       }
     } catch (error) {
       console.error('Error loading user profile:', error);
@@ -95,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string): Promise<AuthError | null> => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
-      await loadUserProfile(result.user.uid);
+      await loadUserProfile(result.user.uid, email);
       return null;
     } catch (error: any) {
       const firebaseError = error as FirebaseAuthError;
