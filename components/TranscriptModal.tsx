@@ -33,6 +33,8 @@ export default function TranscriptModal({ isOpen, onClose, result }: TranscriptM
 
   if (!isOpen || !result) return null;
 
+  console.log('TranscriptModal rendered:', { isOpen, hasResult: !!result, transcriptLength: result?.transcript?.length });
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(result.transcript);
@@ -98,7 +100,7 @@ Powered by Deepgram Nova-2 Model`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-4xl max-h-[90vh] professional-card rounded-xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-4xl max-h-[90vh] professional-card rounded-xl shadow-2xl flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
@@ -175,7 +177,7 @@ Powered by Deepgram Nova-2 Model`;
         </div>
         
         {/* Transcript */}
-        <div className="p-6 overflow-y-auto max-h-96">
+        <div className="flex-1 p-6 overflow-y-auto min-h-0">
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
             <h4 className="text-lg font-semibold text-gray-900 mb-4">Transcript</h4>
             <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
@@ -185,12 +187,12 @@ Powered by Deepgram Nova-2 Model`;
         </div>
         
         {/* Actions */}
-        <div className="p-6 border-t border-gray-200 bg-white">
+        <div className="p-6 border-t border-gray-200 bg-white flex-shrink-0">
           <div className="flex flex-col sm:flex-row gap-3">
             <button 
               onClick={handleCopy}
               disabled={!result?.transcript}
-              className="flex-1 flex items-center justify-center space-x-2 professional-btn px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+              className="flex-1 flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               type="button"
             >
               {copied ? (
@@ -209,7 +211,7 @@ Powered by Deepgram Nova-2 Model`;
             <button 
               onClick={handleDownload}
               disabled={!result?.transcript}
-              className="flex-1 flex items-center justify-center space-x-2 professional-btn-secondary px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+              className="flex-1 flex items-center justify-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300 px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               type="button"
             >
               <Download className="h-5 w-5" />
