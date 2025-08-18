@@ -1,12 +1,17 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Link from 'next/link';
-import { Upload, File, ArrowLeft, AudioWaveform, X, FileAudio, Mic } from 'lucide-react';
+import { Upload, File, ArrowLeft, AudioWaveform, X, FileAudio, Mic, User, LogOut, Crown, AlertCircle, Coins } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import StatusModal from '@/components/StatusModal';
 import TranscriptModal from '@/components/TranscriptModal';
 import { BGPattern } from '@/components/ui/bg-pattern';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 
 interface TranscriptionResult {
   transcript: string;
@@ -27,7 +32,8 @@ interface TranscriptionResult {
   };
 }
 
-export default function AppPage() {
+function AppPageContent() {
+  const { user, userProfile, logout, checkCredits, deductCredits } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -35,10 +41,22 @@ export default function AppPage() {
   const [transcriptionResult, setTranscriptionResult] = useState<TranscriptionResult | null>(null);
   const [progress, setProgress] = useState(0);
   const [currentStatus, setCurrentStatus] = useState('');
+  const [creditInfo, setCreditInfo] = useState<{ canUse: boolean; remaining: number; message: string } | null>(null);
+  const [fileDuration, setFileDuration] = useState<number | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
-      setSelectedFile(acceptedFiles[0]);
+      const file = acceptedFiles[0];
+      setSelectedFile(file);
+      
+      // Check file duration
+      const audio = new Audio();
+      audio.src = URL.createObjectURL(file);
+      audio.addEventListener('loadedmetadata', () => {
+        const durationInMinutes = audio.duration / 60;
+        setFileDuration(durationInMinutes);
+        URL.revokeObjectURL(audio.src);
+      });
     }
   }, []);
 
@@ -51,7 +69,14 @@ export default function AppPage() {
   });
 
   const handleTranscription = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !userProfile || !fileDuration) return;
+
+    // Check credits
+    const creditCheck = await checkCredits(fileDuration);
+    if (!creditCheck.canUse) {
+      alert(creditCheck.message);
+      return;
+    }
 
     setIsTranscribing(true);
     setShowStatusModal(true);
@@ -92,12 +117,18 @@ export default function AppPage() {
       setProgress(100);
       setCurrentStatus('Transcription complete!');
 
+      // Deduct credits
+      await deductCredits(fileDuration);
+
       // Show results after a brief delay
       setTimeout(() => {
         setTranscriptionResult(result);
         setShowStatusModal(false);
         setShowTranscriptModal(true);
         setIsTranscribing(false);
+        
+        // Refresh credit info
+        checkCredits(fileDuration).then(setCreditInfo);
       }, 500);
 
     } catch (error) {
@@ -110,6 +141,7 @@ export default function AppPage() {
 
   const removeFile = () => {
     setSelectedFile(null);
+    setFileDuration(null);
   };
 
   const formatFileSize = (bytes: number) => {
@@ -126,6 +158,21 @@ export default function AppPage() {
     }
     return <File className="h-8 w-8 icon-secondary" />;
   };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  // Update credit info when file duration changes
+  useEffect(() => {
+    if (fileDuration && userProfile) {
+      checkCredits(fileDuration).then(setCreditInfo);
+    }
+  }, [fileDuration, userProfile, checkCredits]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative">
@@ -153,7 +200,62 @@ export default function AppPage() {
             <span className="text-xl font-bold text-gray-900">VoiceScript AI</span>
           </div>
         </div>
+
+        {/* User Menu */}
+        <div className="flex items-center space-x-4">
+          {userProfile && (
+            <div className="flex items-center space-x-2">
+              <Badge variant="secondary" className="capitalize">
+                {userProfile.subscription}
+              </Badge>
+              <div className="flex items-center space-x-1 text-sm text-gray-600">
+                <Coins className="h-4 w-4 text-yellow-500" />
+                <span>{userProfile.credits} credits</span>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex items-center space-x-2">
+            <User className="h-5 w-5 text-gray-600" />
+            <span className="text-sm text-gray-700">{user?.email}</span>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Link href="/pricing">
+              <Button variant="outline" size="sm" className="flex items-center space-x-1">
+                <Crown className="h-4 w-4" />
+                <span>Buy Credits</span>
+              </Button>
+            </Link>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="flex items-center space-x-1"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
+        </div>
       </nav>
+
+      {/* Credit Limit Alert */}
+      {creditInfo && !creditInfo.canUse && (
+        <div className="relative z-10 px-6 mb-6">
+          <Alert className="border-orange-500/50 bg-orange-500/10">
+            <AlertCircle className="h-4 w-4 text-orange-500" />
+            <AlertDescription className="text-orange-700">
+              {creditInfo.message}{' '}
+              <Link href="/pricing" className="font-medium underline">
+                Buy more credits
+              </Link>{' '}
+              to continue transcribing.
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="relative z-10 px-6 py-12">
@@ -172,6 +274,20 @@ export default function AppPage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Drop your audio file below and watch our AI transform it into accurate, searchable text
             </p>
+
+            {/* Plan Info */}
+            {userProfile && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg max-w-md mx-auto">
+                <h3 className="font-semibold text-blue-900 mb-2">Your Plan: {userProfile.subscription}</h3>
+                <div className="text-sm text-blue-700 space-y-1">
+                  <p>• Max file duration: {userProfile.maxFileDuration} minutes</p>
+                  <p>• Credits remaining: {userProfile.credits}</p>
+                  {creditInfo && fileDuration && (
+                    <p>• This file will cost: {Math.ceil(fileDuration)} credits</p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Upload Area */}
@@ -222,7 +338,20 @@ export default function AppPage() {
                     <h3 className="font-semibold text-gray-900">{selectedFile.name}</h3>
                     <p className="text-gray-500 text-sm">
                       {formatFileSize(selectedFile.size)} • {selectedFile.type || 'Audio file'}
+                      {fileDuration && (
+                        <span className="ml-2">• {fileDuration.toFixed(1)} minutes</span>
+                      )}
                     </p>
+                    {fileDuration && userProfile && fileDuration > userProfile.maxFileDuration && (
+                      <p className="text-red-500 text-sm mt-1">
+                        ⚠️ File exceeds your plan limit ({userProfile.maxFileDuration} minutes)
+                      </p>
+                    )}
+                    {fileDuration && creditInfo && (
+                      <p className="text-blue-600 text-sm mt-1">
+                        💰 Cost: {Math.ceil(fileDuration)} credits
+                      </p>
+                    )}
                   </div>
                 </div>
                 
@@ -241,7 +370,7 @@ export default function AppPage() {
             <div className="text-center">
               <button 
                 onClick={handleTranscription}
-                disabled={isTranscribing}
+                disabled={isTranscribing || (creditInfo && !creditInfo.canUse) || (fileDuration && userProfile && fileDuration > userProfile.maxFileDuration)}
                 className={`group professional-btn px-10 py-4 rounded-lg font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 mx-auto ${
                   isTranscribing ? 'animate-pulse' : ''
                 }`}
@@ -268,5 +397,13 @@ export default function AppPage() {
         result={transcriptionResult}
       />
     </div>
+  );
+}
+
+export default function AppPage() {
+  return (
+    <ProtectedRoute>
+      <AppPageContent />
+    </ProtectedRoute>
   );
 }

@@ -1,10 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { AudioWaveform, ArrowRight, Play, Zap, Shield, Clock, CheckCircle, Users, TrendingUp } from 'lucide-react';
+import { AudioWaveform, ArrowRight, Play, Zap, Shield, Clock, CheckCircle, Users, TrendingUp, Coins } from 'lucide-react';
 import { BGPattern } from '@/components/ui/bg-pattern';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LandingPage() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative">
       {/* Subtle Grid Background */}
@@ -23,12 +26,31 @@ export default function LandingPage() {
           </div>
           <span className="text-xl font-bold text-gray-900">VoiceScript AI</span>
         </div>
-        <Link 
-          href="/app" 
-          className="professional-btn px-6 py-2.5 rounded-lg text-sm font-semibold hover:scale-105 transition-transform"
-        >
-          Get Started
-        </Link>
+        <div className="flex items-center space-x-4">
+          {user ? (
+            <Link 
+              href="/app" 
+              className="professional-btn px-6 py-2.5 rounded-lg text-sm font-semibold hover:scale-105 transition-transform"
+            >
+              Go to App
+            </Link>
+          ) : (
+            <>
+              <Link 
+                href="/login" 
+                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link 
+                href="/signup" 
+                className="professional-btn px-6 py-2.5 rounded-lg text-sm font-semibold hover:scale-105 transition-transform"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
+        </div>
       </nav>
 
       {/* Hero Section */}
@@ -51,10 +73,10 @@ export default function LandingPage() {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
-              href="/app" 
+              href={user ? "/app" : "/signup"} 
               className="group professional-btn px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 flex items-center space-x-3"
             >
-              <span>Start Transcribing</span>
+              <span>{user ? 'Start Transcribing' : 'Start Free Trial'}</span>
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             
@@ -123,6 +145,110 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Preview Section */}
+      <section className="relative z-10 px-6 py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-gray-900">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Start free and upgrade as you grow. Pay only for what you use with our credit system.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-2xl font-bold mb-2 text-gray-900">Free</h3>
+              <p className="text-4xl font-bold text-blue-600 mb-4">$0</p>
+              <div className="flex items-center space-x-2 mb-4">
+                <Coins className="h-5 w-5 text-yellow-500" />
+                <span className="text-lg font-semibold text-gray-700">10 Credits</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">1 credit = 1 minute</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">Files up to 1 minute</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">Basic features</span>
+                </li>
+              </ul>
+              <Link 
+                href="/signup" 
+                className="block w-full text-center bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Get Started Free
+              </Link>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-blue-500 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-gray-900">Basic</h3>
+              <p className="text-4xl font-bold text-blue-600 mb-4">$5.99<span className="text-lg text-gray-500">/month</span></p>
+              <div className="flex items-center space-x-2 mb-4">
+                <Coins className="h-5 w-5 text-blue-500" />
+                <span className="text-lg font-semibold text-gray-700">500 Credits</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">500 credits per month</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">Files up to 30 minutes</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">Advanced features</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="text-gray-600">Priority processing</span>
+                </li>
+              </ul>
+              <Link 
+                href="/pricing" 
+                className="block w-full text-center bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Upgrade to Basic
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 max-w-2xl mx-auto">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">How Credits Work</h3>
+              <div className="grid md:grid-cols-3 gap-4 text-sm">
+                <div className="text-center">
+                  <Coins className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                  <p className="font-semibold text-gray-900">1 Credit = 1 Minute</p>
+                  <p className="text-gray-600">Each minute of audio costs 1 credit</p>
+                </div>
+                <div className="text-center">
+                  <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                  <p className="font-semibold text-gray-900">Never Expire</p>
+                  <p className="text-gray-600">Use your credits whenever you need</p>
+                </div>
+                <div className="text-center">
+                  <Zap className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+                  <p className="font-semibold text-gray-900">Buy More Anytime</p>
+                  <p className="text-gray-600">Purchase additional credits as needed</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="relative z-10 px-6 py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
         {/* Diagonal Stripes Background */}
@@ -144,10 +270,10 @@ export default function LandingPage() {
               for their transcription needs. Start your free trial today.
             </p>
             <Link 
-              href="/app" 
+              href={user ? "/app" : "/signup"} 
               className="inline-flex items-center space-x-3 professional-btn px-10 py-4 rounded-lg font-bold text-xl transition-all duration-200"
             >
-              <span>Get Started Now</span>
+              <span>{user ? 'Go to App' : 'Get Started Now'}</span>
               <ArrowRight className="h-6 w-6" />
             </Link>
           </div>
