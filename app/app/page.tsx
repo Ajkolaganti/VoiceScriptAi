@@ -50,17 +50,73 @@ function AppPageContent() {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
       setSelectedFile(file);
+      setFileDuration(null); // Reset duration
       
-      // Check file duration
-      const audio = new Audio();
-      audio.src = URL.createObjectURL(file);
-      audio.addEventListener('loadedmetadata', () => {
-        const durationInMinutes = audio.duration / 60;
-        setFileDuration(durationInMinutes);
-        URL.revokeObjectURL(audio.src);
+      // Method 1: Try to get duration from audio element
+      const tryAudioMethod = () => {
+        const audio = new Audio();
+        const objectUrl = URL.createObjectURL(file);
+        audio.src = objectUrl;
+        
+        const handleLoadedMetadata = () => {
+          if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+            const durationInMinutes = audio.duration / 60;
+            setFileDuration(durationInMinutes);
+          } else {
+            tryFallbackMethod();
+          }
+          URL.revokeObjectURL(objectUrl);
+          audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+          audio.removeEventListener('error', handleError);
+        };
+        
+        const handleError = (error: Event | Error) => {
+          URL.revokeObjectURL(objectUrl);
+          audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+          audio.removeEventListener('error', handleError);
+          tryFallbackMethod();
+        };
+        
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.addEventListener('error', handleError);
+        
+        // Fallback timeout in case metadata never loads
+        setTimeout(() => {
+          if (!fileDuration) {
+            handleError(new Error('Metadata loading timeout'));
+          }
+        }, 5000);
+      };
+      
+      // Method 2: Fallback estimation
+      const tryFallbackMethod = () => {
+        // Estimate duration from file size
+        // This is a rough estimate assuming average bitrate
+        const estimatedDurationMinutes = file.size / (128000 * 60 / 8); // Assuming 128kbps
+        
+        if (estimatedDurationMinutes > 0 && estimatedDurationMinutes < 120) { // Sanity check: less than 2 hours
+          setFileDuration(Math.max(0.1, estimatedDurationMinutes)); // Minimum 0.1 minutes
+        } else {
+          // Last resort: ask user or use default
+          setFileDuration(1.0); // Default to 1 minute
+        }
+      };
+      
+      // Start with the audio method
+      tryAudioMethod();
+    }
+  }, [fileDuration]);
+
+  // Check credits when file duration is available
+  useEffect(() => {
+    if (fileDuration && userProfile) {
+      checkCredits(fileDuration).then((result) => {
+        setCreditInfo(result);
+      }).catch((error) => {
+        console.error('Credit check error:', error);
       });
     }
-  }, []);
+  }, [fileDuration, userProfile, checkCredits]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -71,21 +127,35 @@ function AppPageContent() {
   });
 
   const handleTranscription = async () => {
-    if (!selectedFile || !userProfile || !fileDuration) return;
-
-    // Check credits
-    const creditCheck = await checkCredits(fileDuration);
-    if (!creditCheck.canUse) {
-      alert(creditCheck.message);
+    if (!selectedFile) {
+      alert('Please select an audio file first');
       return;
     }
 
-    setIsTranscribing(true);
-    setShowStatusModal(true);
-    setProgress(0);
-    setCurrentStatus('Uploading file...');
+    if (!userProfile) {
+      alert('Please sign in to use the transcription service');
+      return;
+    }
+
+    if (!fileDuration) {
+      alert('File duration could not be determined. Please try selecting the file again.');
+      return;
+    }
 
     try {
+      // Check credits
+      const creditCheck = await checkCredits(fileDuration);
+      
+      if (!creditCheck.canUse) {
+        alert(creditCheck.message);
+        return;
+      }
+
+      setIsTranscribing(true);
+      setShowStatusModal(true);
+      setProgress(0);
+      setCurrentStatus('Uploading file...');
+
       // Create FormData for file upload
       const formData = new FormData();
       formData.append('audio', selectedFile);
@@ -408,6 +478,7 @@ function AppPageContent() {
           {/* Transcribe Button */}
           {selectedFile && (
             <div className="text-center">
+              
               <button 
                 onClick={handleTranscription}
                 disabled={Boolean(isTranscribing || (creditInfo && !creditInfo.canUse) || (fileDuration && userProfile && fileDuration > userProfile.maxFileDuration))}
