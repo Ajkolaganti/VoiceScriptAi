@@ -37,10 +37,10 @@ export function rateLimit(config: RateLimitConfig) {
 // Clean up old entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const [ip, record] of rateLimitStore.entries()) {
+  const entries = Array.from(rateLimitStore.entries());
+  entries.forEach(([ip, record]) => {
     if (now > record.resetTime) {
       rateLimitStore.delete(ip);
     }
-  }
-}, 5 * 60 * 1000); 
+  });
 }, 5 * 60 * 1000); 
