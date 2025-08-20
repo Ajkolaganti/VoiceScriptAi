@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AudioWaveform } from 'lucide-react';
+import BrandingFooter from '@/components/BrandingFooter';
 
 const plans = [
   {
@@ -277,6 +278,9 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
+
+      {/* Branding Footer */}
+      <BrandingFooter />
     </div>
   );
 } 

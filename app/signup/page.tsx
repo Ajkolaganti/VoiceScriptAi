@@ -16,6 +16,7 @@ import { AuthErrorAlert } from '@/components/ui/auth-error-alert';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { AudioWaveform } from 'lucide-react';
 import { AuthError } from '@/lib/auth-errors';
+import BrandingFooter from '@/components/BrandingFooter';
 
 const signupSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -201,6 +202,9 @@ export default function SignupPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Branding Footer */}
+      <BrandingFooter />
     </div>
   );
 } 

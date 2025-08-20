@@ -10,6 +10,7 @@ import { ShinyButton } from '@/components/ui/shiny-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import BrandingFooter from '@/components/BrandingFooter';
 
 function AccountPage() {
   const { user, userProfile, logout } = useAuth();
@@ -319,6 +320,9 @@ function AccountPage() {
           </Card>
         </div>
       </div>
+
+      {/* Branding Footer */}
+      <BrandingFooter />
     </div>
   );
 }

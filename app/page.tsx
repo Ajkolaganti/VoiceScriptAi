@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { AudioWaveform, ArrowRight, Play, Zap, Shield, Clock, CheckCircle, Users, TrendingUp, Coins } from 'lucide-react';
 import { BGPattern } from '@/components/ui/bg-pattern';
 import { useAuth } from '@/contexts/AuthContext';
+import BrandingFooter from '@/components/BrandingFooter';
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -280,21 +281,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 px-6 py-12 bg-white border-t border-gray-200">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="p-2 rounded-lg bg-blue-600">
-              <AudioWaveform className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-lg font-bold text-gray-900">VoiceScript AI</span>
-          </div>
-          <p className="text-gray-500">
-            © 2024 VoiceScript AI. All rights reserved. 
-            Powered by advanced AI technology.
-          </p>
-        </div>
-      </footer>
+      {/* Branding Footer */}
+      <BrandingFooter />
     </div>
   );
 }

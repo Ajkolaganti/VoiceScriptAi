@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { ShinyButton } from '@/components/ui/shiny-button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import BrandingFooter from '@/components/BrandingFooter';
 
 interface TranscriptionResult {
   transcript: string;
@@ -432,6 +433,9 @@ function AppPageContent() {
         onClose={() => setShowTranscriptModal(false)}
         result={transcriptionResult}
       />
+
+      {/* Branding Footer */}
+      <BrandingFooter />
     </div>
   );
 }
