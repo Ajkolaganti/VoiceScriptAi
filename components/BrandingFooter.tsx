@@ -1,6 +1,6 @@
 'use client';
 
-import { Github, Heart } from 'lucide-react';
+import { Github, Heart, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
 export default function BrandingFooter() {
@@ -22,10 +22,20 @@ export default function BrandingFooter() {
           </Link>
         </div>
         
-        <div className="flex items-center space-x-4 text-xs text-gray-400">
+        <div className="flex items-center space-x-2 sm:space-x-4 text-xs text-gray-400">
           <span>VoiceScript AI</span>
           <span>•</span>
           <span>AI-Powered Transcription</span>
+          <span>•</span>
+          <Link 
+            href="https://www.bubblybrain.shop/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-700 transition-colors flex items-center space-x-1"
+          >
+            <span>Explore More Tools</span>
+            <ExternalLink className="h-3 w-3" />
+          </Link>
         </div>
       </div>
     </footer>
