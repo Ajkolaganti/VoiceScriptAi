@@ -99,27 +99,27 @@ Powered by Deepgram Nova-2 Model`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-4xl max-h-[90vh] professional-card rounded-xl shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
+      <div className="w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] professional-card rounded-xl shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-green-600">
-              <FileText className="h-5 w-5 text-white" />
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-green-600">
+              <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900">Transcription Complete</h3>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Transcription Complete</h3>
           </div>
           <button 
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="h-5 w-5 text-gray-500" />
+            <X className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
           </button>
         </div>
         
         {/* Stats */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             <div className="flex items-center space-x-3 p-4 stats-card rounded-xl">
               <div className="p-2 rounded-lg bg-green-100">
                 <Target className="h-5 w-5 icon-success" />
@@ -157,16 +157,16 @@ Powered by Deepgram Nova-2 Model`;
             </div>
             
             {result.metadata && (
-              <div className="md:col-span-3 mt-4">
-                <div className="flex items-center space-x-3 p-4 stats-card rounded-xl">
-                  <div className="p-2 rounded-lg bg-gray-100">
-                    <FileText className="h-5 w-5 icon-secondary" />
+              <div className="col-span-1 sm:col-span-2 md:col-span-3 mt-3 sm:mt-4">
+                <div className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 stats-card rounded-xl">
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-gray-100">
+                    <FileText className="h-4 w-4 sm:h-5 sm:w-5 icon-secondary" />
                   </div>
-                  <div className="flex-1">
-                    <div className="text-lg font-bold text-gray-900 truncate">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm sm:text-lg font-bold text-gray-900 truncate">
                       {result.metadata.fileName}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-xs sm:text-sm text-gray-500">
                       {(result.metadata.fileSize / (1024 * 1024)).toFixed(2)} MB • {result.metadata.mimeType}
                     </div>
                   </div>
@@ -177,18 +177,18 @@ Powered by Deepgram Nova-2 Model`;
         </div>
         
         {/* Transcript */}
-        <div className="flex-1 p-6 overflow-y-auto min-h-0">
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Transcript</h4>
-            <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto min-h-0">
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 sm:p-6">
+            <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Transcript</h4>
+            <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
               {result.transcript}
             </div>
           </div>
         </div>
         
         {/* Actions */}
-        <div className="p-6 border-t border-gray-200 bg-white flex-shrink-0">
-          <div className="flex flex-col sm:flex-row gap-3">
+        <div className="p-4 sm:p-6 border-t border-gray-200 bg-white flex-shrink-0">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button 
               onClick={handleCopy}
               disabled={!result?.transcript}

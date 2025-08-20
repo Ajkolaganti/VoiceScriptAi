@@ -186,79 +186,81 @@ function AppPageContent() {
         className="z-0" 
       />
       {/* Navigation */}
-      <nav className="relative z-10 flex items-center justify-between p-6 lg:p-8">
-        <div className="flex items-center space-x-4">
+      <nav className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 lg:p-8 gap-4">
+        {/* Logo and Back Button */}
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
           <Link 
             href="/" 
-            className="p-3 professional-btn-secondary rounded-lg hover:scale-105 transition-all duration-200 group"
+            className="p-2 sm:p-3 professional-btn-secondary rounded-lg hover:scale-105 transition-all duration-200 group"
           >
-            <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 group-hover:-translate-x-1 transition-transform" />
           </Link>
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-blue-600">
-              <AudioWaveform className="h-6 w-6 text-white" />
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-blue-600">
+              <AudioWaveform className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">VoiceScript AI</span>
+            <span className="text-lg sm:text-xl font-bold text-gray-900">VoiceScript AI</span>
           </div>
         </div>
 
-        {/* User Menu */}
-        <div className="flex items-center space-x-4">
+        {/* User Info - Mobile Stacked */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
           {userProfile && (
-            <div className="flex items-center space-x-2">
-              <Badge variant="secondary" className="capitalize">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
+              <Badge variant="secondary" className="capitalize text-xs sm:text-sm">
                 {userProfile.subscription}
               </Badge>
-              <div className="flex items-center space-x-1 text-sm text-gray-600 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200">
-                <Coins className="h-4 w-4 text-yellow-600" />
+              <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200">
+                <Coins className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
                 <span className="font-medium text-yellow-700">{userProfile.credits} credits</span>
               </div>
             </div>
           )}
           
           <div className="flex items-center space-x-2">
-            <User className="h-5 w-5 text-gray-600" />
-            <span className="text-sm text-gray-700">{user?.email}</span>
+            <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+            <span className="text-xs sm:text-sm text-gray-700 truncate max-w-[120px] sm:max-w-none">{user?.email}</span>
           </div>
+        </div>
+
+        {/* Action Buttons - Mobile Stacked */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+          <Link href="/account" className="w-full sm:w-auto">
+            <ShinyButton className="text-xs sm:text-sm w-full sm:w-auto justify-center">
+              <span className="flex items-center space-x-1">
+                <User className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span>Account</span>
+              </span>
+            </ShinyButton>
+          </Link>
           
-          <div className="flex items-center space-x-2">
-            <Link href="/account">
-              <ShinyButton className="text-sm">
-                <span className="flex items-center space-x-1">
-                  <User className="h-4 w-4" />
-                  <span>Account</span>
-                </span>
-              </ShinyButton>
-            </Link>
-            
-            <Link href="/pricing">
-              <ShinyButton className="text-sm">
-                <span className="flex items-center space-x-1">
-                  <Crown className="h-4 w-4" />
-                  <span>Buy Credits</span>
-                </span>
-              </ShinyButton>
-            </Link>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleLogout}
-              className="flex items-center space-x-1"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Logout</span>
-            </Button>
-          </div>
+          <Link href="/pricing" className="w-full sm:w-auto">
+            <ShinyButton className="text-xs sm:text-sm w-full sm:w-auto justify-center">
+              <span className="flex items-center space-x-1">
+                <Crown className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span>Buy Credits</span>
+              </span>
+            </ShinyButton>
+          </Link>
+          
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleLogout}
+            className="flex items-center space-x-1 w-full sm:w-auto justify-center"
+          >
+            <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span>Logout</span>
+          </Button>
         </div>
       </nav>
 
       {/* Credit Limit Alert */}
       {creditInfo && !creditInfo.canUse && (
-        <div className="relative z-10 px-6 mb-6">
+        <div className="relative z-10 px-4 sm:px-6 mb-4 sm:mb-6">
           <Alert className="border-orange-500/50 bg-orange-500/10">
             <AlertCircle className="h-4 w-4 text-orange-500" />
-            <AlertDescription className="text-orange-700">
+            <AlertDescription className="text-orange-700 text-sm">
               {creditInfo.message}{' '}
               <Link href="/pricing" className="font-medium underline">
                 Buy more credits
@@ -270,52 +272,52 @@ function AppPageContent() {
       )}
 
       {/* Main Content */}
-      <main className="relative z-10 px-6 py-12">
+      <main className="relative z-10 px-4 sm:px-6 py-8 sm:py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 mb-6">
-              <Mic className="h-4 w-4 text-blue-600" />
-              <span className="text-sm text-blue-700 font-medium">AI-Powered Audio Transcription</span>
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-full bg-blue-50 border border-blue-200 mb-4 sm:mb-6">
+              <Mic className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+              <span className="text-xs sm:text-sm text-blue-700 font-medium">AI-Powered Audio Transcription</span>
             </div>
             
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-6 text-gray-900">
               Upload Your <span className="text-blue-600">Audio File</span>
             </h1>
             
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Drop your audio file below and watch our AI transform it into accurate, searchable text
             </p>
 
             {/* Plan Info */}
             {userProfile && (
-              <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 max-w-lg mx-auto">
+              <div className="mt-4 sm:mt-6 p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 max-w-lg mx-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-blue-900 text-lg">Your Plan: {userProfile.subscription}</h3>
-                  <Badge variant="secondary" className="capitalize">
+                  <h3 className="font-bold text-blue-900 text-base sm:text-lg">Your Plan: {userProfile.subscription}</h3>
+                  <Badge variant="secondary" className="capitalize text-xs sm:text-sm">
                     {userProfile.subscription}
                   </Badge>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+                  <div className="text-center p-2 sm:p-3 bg-white rounded-lg border border-blue-100">
                     <div className="flex items-center justify-center space-x-1 mb-1">
-                      <Coins className="h-4 w-4 text-yellow-600" />
+                      <Coins className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
                       <span className="text-xs text-gray-600">Credits</span>
                     </div>
-                    <p className="text-2xl font-bold text-blue-900">{userProfile.credits}</p>
+                    <p className="text-lg sm:text-2xl font-bold text-blue-900">{userProfile.credits}</p>
                   </div>
-                  <div className="text-center p-3 bg-white rounded-lg border border-blue-100">
+                  <div className="text-center p-2 sm:p-3 bg-white rounded-lg border border-blue-100">
                     <div className="flex items-center justify-center space-x-1 mb-1">
                       <span className="text-xs text-gray-600">Max Duration</span>
                     </div>
-                    <p className="text-2xl font-bold text-blue-900">{userProfile.maxFileDuration}m</p>
+                    <p className="text-lg sm:text-2xl font-bold text-blue-900">{userProfile.maxFileDuration}m</p>
                   </div>
                 </div>
                 
                 {creditInfo && fileDuration && (
-                  <div className="bg-blue-100 rounded-lg p-3 text-center">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-blue-100 rounded-lg p-2 sm:p-3 text-center">
+                    <p className="text-xs sm:text-sm text-blue-800">
                       <span className="font-medium">This file will cost:</span> {Math.ceil(fileDuration)} credits
                     </p>
                   </div>
@@ -325,32 +327,32 @@ function AppPageContent() {
           </div>
 
           {/* Upload Area */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <div 
               {...getRootProps()} 
-              className={`upload-area rounded-2xl p-12 cursor-pointer ${
+              className={`upload-area rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-12 cursor-pointer ${
                 isDragActive ? 'drag-over' : ''
               }`}
             >
               <input {...getInputProps()} />
               <div className="text-center">
-                <div className="mb-6">
-                  <Upload className="h-16 w-16 icon-primary mx-auto" />
+                <div className="mb-4 sm:mb-6">
+                  <Upload className="h-12 w-12 sm:h-16 sm:w-16 icon-primary mx-auto" />
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">
                   {isDragActive ? 'Drop your audio file here' : 'Choose or Drop Audio File'}
                 </h3>
                 
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
                   Supports MP3, WAV, M4A, FLAC, OGG, and more formats
                 </p>
                 
-                <div className="flex flex-wrap justify-center gap-2">
+                <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
                   {['.MP3', '.WAV', '.M4A', '.FLAC', '.OGG'].map((format) => (
                     <span 
                       key={format} 
-                      className="px-3 py-1 text-sm bg-gray-100 border border-gray-200 rounded-full text-gray-600"
+                      className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-gray-100 border border-gray-200 rounded-full text-gray-600"
                     >
                       {format}
                     </span>
@@ -362,27 +364,27 @@ function AppPageContent() {
 
           {/* Selected File Display */}
           {selectedFile && (
-            <div className="mb-8 professional-card p-6 rounded-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-blue-50 rounded-lg">
+            <div className="mb-6 sm:mb-8 professional-card p-4 sm:p-6 rounded-xl">
+              <div className="flex items-start sm:items-center justify-between">
+                <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
+                  <div className="p-2 sm:p-3 bg-blue-50 rounded-lg flex-shrink-0">
                     {getFileIcon(selectedFile)}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{selectedFile.name}</h3>
-                    <p className="text-gray-500 text-sm">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{selectedFile.name}</h3>
+                    <p className="text-gray-500 text-xs sm:text-sm">
                       {formatFileSize(selectedFile.size)} • {selectedFile.type || 'Audio file'}
                       {fileDuration && (
-                        <span className="ml-2">• {fileDuration.toFixed(1)} minutes</span>
+                        <span className="ml-1 sm:ml-2">• {fileDuration.toFixed(1)} minutes</span>
                       )}
                     </p>
                     {fileDuration && userProfile && fileDuration > userProfile.maxFileDuration && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="text-red-500 text-xs sm:text-sm mt-1">
                         ⚠️ File exceeds your plan limit ({userProfile.maxFileDuration} minutes)
                       </p>
                     )}
                     {fileDuration && creditInfo && (
-                      <p className="text-blue-600 text-sm mt-1">
+                      <p className="text-blue-600 text-xs sm:text-sm mt-1">
                         💰 Cost: {Math.ceil(fileDuration)} credits
                       </p>
                     )}
@@ -391,9 +393,9 @@ function AppPageContent() {
                 
                 <button 
                   onClick={removeFile}
-                  className="p-2 hover:bg-red-50 rounded-lg transition-colors group"
+                  className="p-1.5 sm:p-2 hover:bg-red-50 rounded-lg transition-colors group flex-shrink-0 ml-2"
                 >
-                  <X className="h-5 w-5 text-gray-400 group-hover:text-red-500" />
+                  <X className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-hover:text-red-500" />
                 </button>
               </div>
             </div>
@@ -405,11 +407,11 @@ function AppPageContent() {
               <button 
                 onClick={handleTranscription}
                 disabled={Boolean(isTranscribing || (creditInfo && !creditInfo.canUse) || (fileDuration && userProfile && fileDuration > userProfile.maxFileDuration))}
-                className={`group professional-btn px-10 py-4 rounded-lg font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 mx-auto ${
+                className={`group professional-btn px-6 sm:px-10 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 sm:space-x-3 mx-auto ${
                   isTranscribing ? 'animate-pulse' : ''
                 }`}
               >
-                <Mic className="h-6 w-6" />
+                <Mic className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span>{isTranscribing ? 'Processing...' : 'Start Transcription'}</span>
               </button>
             </div>

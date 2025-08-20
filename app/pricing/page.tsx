@@ -115,25 +115,25 @@ export default function PricingPage() {
           <span>Back to App</span>
         </Link>
 
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">Choose Your Plan</h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4">Choose Your Plan</h1>
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-2xl mx-auto px-4">
             Select the perfect plan for your transcription needs. Start free and upgrade anytime.
           </p>
         </div>
 
         {currentPlan && (
-          <div className="mb-8 text-center">
-            <Badge variant="secondary" className="mb-2">
+          <div className="mb-6 sm:mb-8 text-center">
+            <Badge variant="secondary" className="mb-2 text-xs sm:text-sm">
               Current Plan: {currentPlan.name}
             </Badge>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm sm:text-base">
               You're currently on the {currentPlan.name} plan with {userProfile?.credits} credits remaining
             </p>
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => {
             const Icon = plan.icon;
             const isCurrentPlan = currentPlan?.name === plan.name;
@@ -159,47 +159,47 @@ export default function PricingPage() {
                   </div>
                 )}
 
-                <CardHeader className="text-center">
-                  <div className="flex items-center justify-center space-x-2 mb-4">
-                    <Icon className="h-8 w-8 text-blue-500" />
-                    <CardTitle className="text-2xl font-bold text-white">{plan.name}</CardTitle>
+                <CardHeader className="text-center p-4 sm:p-6">
+                  <div className="flex items-center justify-center space-x-2 mb-3 sm:mb-4">
+                    <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+                    <CardTitle className="text-xl sm:text-2xl font-bold text-white">{plan.name}</CardTitle>
                   </div>
                   <div className="mb-2">
-                    <span className="text-4xl font-bold text-white">{plan.price}</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-white">{plan.price}</span>
                     {plan.period && (
-                      <span className="text-gray-400">{plan.period}</span>
+                      <span className="text-gray-400 text-sm sm:text-base">{plan.period}</span>
                     )}
                   </div>
-                  <CardDescription className="text-gray-400">
+                  <CardDescription className="text-gray-400 text-sm sm:text-base">
                     {plan.description}
                   </CardDescription>
-                  <div className="mt-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                    <p className="text-blue-400 font-semibold">{plan.credits} Credits</p>
-                    <p className="text-blue-300 text-sm">1 credit = 1 minute of transcription</p>
+                  <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                    <p className="text-blue-400 font-semibold text-sm sm:text-base">{plan.credits} Credits</p>
+                    <p className="text-blue-300 text-xs sm:text-sm">1 credit = 1 minute of transcription</p>
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-white">What's included:</h4>
-                    <ul className="space-y-2">
+                <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+                  <div className="space-y-2 sm:space-y-3">
+                    <h4 className="font-semibold text-white text-sm sm:text-base">What's included:</h4>
+                    <ul className="space-y-1.5 sm:space-y-2">
                       {plan.features.map((feature, index) => (
                         <li key={index} className="flex items-center space-x-2">
-                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-300">{feature}</span>
+                          <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm text-gray-300">{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   {plan.limitations.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-white">Limitations:</h4>
-                      <ul className="space-y-2">
+                    <div className="space-y-2 sm:space-y-3">
+                      <h4 className="font-semibold text-white text-sm sm:text-base">Limitations:</h4>
+                      <ul className="space-y-1.5 sm:space-y-2">
                         {plan.limitations.map((limitation, index) => (
                           <li key={index} className="flex items-center space-x-2">
-                            <span className="h-4 w-4 text-red-500 flex-shrink-0">×</span>
-                            <span className="text-sm text-gray-400">{limitation}</span>
+                            <span className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 flex-shrink-0">×</span>
+                            <span className="text-xs sm:text-sm text-gray-400">{limitation}</span>
                           </li>
                         ))}
                       </ul>
@@ -207,7 +207,7 @@ export default function PricingPage() {
                   )}
 
                   <Button
-                    className={`w-full ${
+                    className={`w-full text-sm sm:text-base py-2 sm:py-3 ${
                       isCurrentPlan
                         ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
                         : isUpgrade

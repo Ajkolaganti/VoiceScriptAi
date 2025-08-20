@@ -102,40 +102,40 @@ function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/20 to-cyan-950/20">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         <Link 
           href="/app" 
-          className="inline-flex items-center space-x-2 text-gray-400 hover:text-white mb-8 transition-colors"
+          className="inline-flex items-center space-x-2 text-gray-400 hover:text-white mb-6 sm:mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to App</span>
         </Link>
 
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">Account Settings</h1>
-            <p className="text-xl text-gray-400">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4">Account Settings</h1>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-400 px-4">
               Manage your subscription, credits, and account preferences
             </p>
           </div>
 
           {/* User Info Card */}
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
-                <User className="h-5 w-5" />
+          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-6 sm:mb-8">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-white flex items-center space-x-2 text-base sm:text-lg">
+                <User className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>Account Information</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+            <CardContent className="space-y-4 p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-gray-400">Email</label>
-                  <p className="text-white">{user?.email}</p>
+                  <label className="text-xs sm:text-sm text-gray-400">Email</label>
+                  <p className="text-white text-sm sm:text-base truncate">{user?.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400">Account Created</label>
-                  <p className="text-white">
+                  <label className="text-xs sm:text-sm text-gray-400">Account Created</label>
+                  <p className="text-white text-sm sm:text-base">
                     {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}
                   </p>
                 </div>
