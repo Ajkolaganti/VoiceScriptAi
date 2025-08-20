@@ -187,9 +187,9 @@ function AppPageContent() {
         className="z-0" 
       />
       {/* Navigation */}
-      <nav className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 lg:p-8 gap-4">
+      <nav className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between p-4 sm:p-6 lg:p-8 gap-4">
         {/* Logo and Back Button */}
-        <div className="flex items-center space-x-3 w-full sm:w-auto">
+        <div className="flex items-center space-x-3 w-full lg:w-auto">
           <Link 
             href="/" 
             className="p-2 sm:p-3 professional-btn-secondary rounded-lg hover:scale-105 transition-all duration-200 group"
@@ -204,55 +204,58 @@ function AppPageContent() {
           </div>
         </div>
 
-        {/* User Info - Mobile Stacked */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-          {userProfile && (
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
-              <Badge variant="secondary" className="capitalize text-xs sm:text-sm">
-                {userProfile.subscription}
-              </Badge>
-              <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200">
-                <Coins className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
-                <span className="font-medium text-yellow-700">{userProfile.credits} credits</span>
+        {/* User Info and Actions - Responsive Layout */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-6 w-full lg:w-auto">
+          {/* User Info */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            {userProfile && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                <Badge variant="secondary" className="capitalize text-xs sm:text-sm">
+                  {userProfile.subscription}
+                </Badge>
+                <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-600 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200">
+                  <Coins className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
+                  <span className="font-medium text-yellow-700">{userProfile.credits} credits</span>
+                </div>
               </div>
+            )}
+            
+            <div className="flex items-center space-x-2">
+              <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+              <span className="text-xs sm:text-sm text-gray-700 truncate max-w-[120px] sm:max-w-none">{user?.email}</span>
             </div>
-          )}
-          
-          <div className="flex items-center space-x-2">
-            <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-            <span className="text-xs sm:text-sm text-gray-700 truncate max-w-[120px] sm:max-w-none">{user?.email}</span>
           </div>
-        </div>
 
-        {/* Action Buttons - Mobile Stacked */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-          <Link href="/account" className="w-full sm:w-auto">
-            <ShinyButton className="text-xs sm:text-sm w-full sm:w-auto justify-center">
-              <span className="flex items-center space-x-1">
-                <User className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span>Account</span>
-              </span>
-            </ShinyButton>
-          </Link>
-          
-          <Link href="/pricing" className="w-full sm:w-auto">
-            <ShinyButton className="text-xs sm:text-sm w-full sm:w-auto justify-center">
-              <span className="flex items-center space-x-1">
-                <Crown className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span>Buy Credits</span>
-              </span>
-            </ShinyButton>
-          </Link>
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={handleLogout}
-            className="flex items-center space-x-1 w-full sm:w-auto justify-center"
-          >
-            <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span>Logout</span>
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+            <Link href="/account" className="w-full sm:w-auto">
+              <ShinyButton className="text-xs sm:text-sm w-full sm:w-auto justify-center">
+                <span className="flex items-center space-x-1">
+                  <User className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>Account</span>
+                </span>
+              </ShinyButton>
+            </Link>
+            
+            <Link href="/pricing" className="w-full sm:w-auto">
+              <ShinyButton className="text-xs sm:text-sm w-full sm:w-auto justify-center">
+                <span className="flex items-center space-x-1">
+                  <Crown className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>Buy Credits</span>
+                </span>
+              </ShinyButton>
+            </Link>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="flex items-center space-x-1 w-full sm:w-auto justify-center"
+            >
+              <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
         </div>
       </nav>
 

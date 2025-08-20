@@ -1,15 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@deepgram/sdk';
+import { rateLimit } from '@/lib/rate-limit';
 
 const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
 
+// Rate limiting: 10 requests per minute per IP
+const rateLimiter = rateLimit({ windowMs: 60 * 1000, maxRequests: 10 });
+
 export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = rateLimiter(request);
+  if (rateLimitResult) {
+    return rateLimitResult;
+  }
   try {
     const formData = await request.formData();
     const audioFile = formData.get('audio') as File;
 
     if (!audioFile) {
       return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
+    }
+
+    // Validate file type
+    const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/flac', 'audio/ogg', 'audio/webm'];
+    if (!allowedTypes.includes(audioFile.type)) {
+      return NextResponse.json({ error: 'Invalid file type. Only audio files are allowed.' }, { status: 400 });
+    }
+
+    // Validate file size (50MB limit)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (audioFile.size > maxSize) {
+      return NextResponse.json({ error: 'File too large. Maximum size is 50MB.' }, { status: 400 });
     }
 
     // Convert file to buffer

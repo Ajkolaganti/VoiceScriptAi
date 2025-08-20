@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, User, Coins, Crown, CreditCard, AlertTriangle, CheckCircle, XCircle, LogOut } from 'lucide-react';
+import { ArrowLeft, User, Coins, Crown, CreditCard, AlertTriangle, CheckCircle, XCircle, LogOut, Shield, Clock, Zap } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,6 @@ function AccountPage() {
       if (response.ok) {
         setCancelStatus('success');
         setCancelMessage('Subscription cancelled successfully. You can continue using your remaining credits.');
-        // Refresh the page after a delay to update the user profile
         setTimeout(() => window.location.reload(), 2000);
       } else {
         setCancelStatus('error');
@@ -103,221 +102,508 @@ function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/20 to-cyan-950/20">
-      <div className="container mx-auto px-4 py-6 sm:py-8">
-        <Link 
-          href="/app" 
-          className="inline-flex items-center space-x-2 text-gray-400 hover:text-white mb-6 sm:mb-8 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to App</span>
-        </Link>
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex min-h-screen">
+        {/* Left Side - Account Info */}
+        <div className="flex-1 p-8">
+          <div className="max-w-4xl mx-auto">
+            <Link 
+              href="/app" 
+              className="inline-flex items-center space-x-2 text-gray-400 hover:text-white mb-8 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to App</span>
+            </Link>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4">Account Settings</h1>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-400 px-4">
-              Manage your subscription, credits, and account preferences
-            </p>
-          </div>
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold text-white mb-4">Account Settings</h1>
+              <p className="text-xl text-gray-400">
+                Manage your subscription, credits, and account preferences
+              </p>
+            </div>
 
-          {/* User Info Card */}
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-6 sm:mb-8">
-            <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-white flex items-center space-x-2 text-base sm:text-lg">
-                <User className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span>Account Information</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs sm:text-sm text-gray-400">Email</label>
-                  <p className="text-white text-sm sm:text-base truncate">{user?.email}</p>
+            {/* User Info Card */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
+              <CardHeader className="p-6">
+                <CardTitle className="text-white flex items-center space-x-3 text-lg">
+                  <User className="h-5 w-5" />
+                  <span>Account Information</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 p-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm text-gray-400">Email</label>
+                    <p className="text-white text-base truncate">{user?.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-400">Account Created</label>
+                    <p className="text-white text-base">
+                      {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs sm:text-sm text-gray-400">Account Created</label>
-                  <p className="text-white text-sm sm:text-base">
-                    {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Current Plan Card */}
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
-                <Crown className="h-5 w-5" />
-                <span>Current Plan</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-white capitalize">{userProfile?.subscription || 'Free'}</h3>
-                  <p className="text-gray-400">
-                    {userProfile?.subscription === 'basic' ? '$5.99/month' : 'Free'}
-                  </p>
-                </div>
-                <Badge variant={userProfile?.subscription === 'basic' ? 'default' : 'secondary'}>
-                  {userProfile?.subscription === 'basic' ? 'Premium' : 'Free'}
-                </Badge>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-white mb-3">What's included:</h4>
-                  <ul className="space-y-2">
-                    {getPlanFeatures(userProfile?.subscription || 'free').map((feature, index) => (
-                      <li key={index} className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                        <span className="text-sm text-gray-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-white mb-3">Limitations:</h4>
-                  <ul className="space-y-2">
-                    {getPlanLimitations(userProfile?.subscription || 'free').map((limitation, index) => (
-                      <li key={index} className="flex items-center space-x-2">
-                        <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
-                        <span className="text-sm text-gray-400">{limitation}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Credits Card */}
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
-                <Coins className="h-5 w-5" />
-                <span>Credits</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-3xl font-bold text-white">{userProfile?.credits || 0}</h3>
-                  <p className="text-gray-400">credits remaining</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-400">Max file duration</p>
-                  <p className="text-lg font-semibold text-white">{userProfile?.maxFileDuration || 1} minutes</p>
-                </div>
-              </div>
-              
-              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                <p className="text-blue-400 text-sm">
-                  <strong>How credits work:</strong> 1 credit = 1 minute of transcription. 
-                  Partial minutes are rounded up.
-                </p>
-              </div>
-
-              <div className="mt-4 flex space-x-3">
-                <Link href="/pricing">
-                  <ShinyButton className="bg-blue-600 text-white">
-                    <span className="flex items-center">
-                      <Crown className="h-4 w-4 mr-2" />
-                      Buy More Credits
-                    </span>
-                  </ShinyButton>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Subscription Management */}
-          {userProfile?.subscription === 'basic' && (
+            {/* Current Plan Card */}
             <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
-                  <CreditCard className="h-5 w-5" />
-                  <span>Subscription Management</span>
+                <CardTitle className="text-white flex items-center space-x-3">
+                  <Crown className="h-5 w-5" />
+                  <span>Current Plan</span>
                 </CardTitle>
-                <CardDescription className="text-gray-400">
-                  Manage your subscription and billing
-                </CardDescription>
               </CardHeader>
               <CardContent>
-                {cancelStatus === 'success' && (
-                  <Alert className="mb-4 border-green-500/50 bg-green-500/10">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <AlertDescription className="text-green-400">
-                      {cancelMessage}
-                    </AlertDescription>
-                  </Alert>
-                )}
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-3xl font-bold text-white capitalize">{userProfile?.subscription || 'Free'}</h3>
+                    <p className="text-gray-400">
+                      {userProfile?.subscription === 'basic' ? '$5.99/month' : 'Free'}
+                    </p>
+                  </div>
+                  <Badge variant={userProfile?.subscription === 'basic' ? 'default' : 'secondary'}>
+                    {userProfile?.subscription === 'basic' ? 'Premium' : 'Free'}
+                  </Badge>
+                </div>
 
-                {cancelStatus === 'error' && (
-                  <Alert className="mb-4 border-red-500/50 bg-red-500/10">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    <AlertDescription className="text-red-400">
-                      {cancelMessage}
-                    </AlertDescription>
-                  </Alert>
-                )}
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <h4 className="font-semibold text-white mb-4">What's included:</h4>
+                    <ul className="space-y-3">
+                      {getPlanFeatures(userProfile?.subscription || 'free').map((feature, index) => (
+                        <li key={index} className="flex items-center space-x-3">
+                          <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-300">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white mb-4">Limitations:</h4>
+                    <ul className="space-y-3">
+                      {getPlanLimitations(userProfile?.subscription || 'free').map((limitation, index) => (
+                        <li key={index} className="flex items-center space-x-3">
+                          <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-400">{limitation}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-                <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mb-4">
-                  <div className="flex items-start space-x-3">
-                    <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-orange-400 mb-2">Cancel Subscription</h4>
-                      <p className="text-orange-300 text-sm mb-3">
-                        Cancelling your subscription will:
-                      </p>
-                      <ul className="text-orange-300 text-sm space-y-1 mb-3">
-                        <li>• Stop future billing</li>
-                        <li>• Keep your remaining credits</li>
-                        <li>• Downgrade to Free plan</li>
-                        <li>• Reduce file duration limit to 1 minute</li>
-                      </ul>
-                      <p className="text-orange-300 text-sm">
-                        You can resubscribe anytime to get more credits and features.
-                      </p>
+            {/* Credits Card */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-3">
+                  <Coins className="h-5 w-5" />
+                  <span>Credits</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-4xl font-bold text-white">{userProfile?.credits || 0}</h3>
+                    <p className="text-gray-400">credits remaining</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-400">Max file duration</p>
+                    <p className="text-2xl font-semibold text-white">{userProfile?.maxFileDuration || 1} minutes</p>
+                  </div>
+                </div>
+                
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-6">
+                  <p className="text-blue-400 text-sm">
+                    <strong>How credits work:</strong> 1 credit = 1 minute of transcription. 
+                    Partial minutes are rounded up.
+                  </p>
+                </div>
+
+                <div className="flex space-x-4">
+                  <Link href="/pricing">
+                    <ShinyButton className="bg-blue-600 text-white">
+                      <span className="flex items-center">
+                        <Crown className="h-4 w-4 mr-2" />
+                        Buy More Credits
+                      </span>
+                    </ShinyButton>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Subscription Management */}
+            {userProfile?.subscription === 'basic' && (
+              <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center space-x-3">
+                    <CreditCard className="h-5 w-5" />
+                    <span>Subscription Management</span>
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Manage your subscription and billing
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {cancelStatus === 'success' && (
+                    <Alert className="mb-4 border-green-500/50 bg-green-500/10">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <AlertDescription className="text-green-400">
+                        {cancelMessage}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {cancelStatus === 'error' && (
+                    <Alert className="mb-4 border-red-500/50 bg-red-500/10">
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                      <AlertDescription className="text-red-400">
+                        {cancelMessage}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-orange-400 mb-2">Cancel Subscription</h4>
+                        <p className="text-orange-300 text-sm mb-3">
+                          Cancelling your subscription will:
+                        </p>
+                        <ul className="text-orange-300 text-sm space-y-1 mb-3">
+                          <li>• Stop future billing</li>
+                          <li>• Keep your remaining credits</li>
+                          <li>• Downgrade to Free plan</li>
+                          <li>• Reduce file duration limit to 1 minute</li>
+                        </ul>
+                        <p className="text-orange-300 text-sm">
+                          You can resubscribe anytime to get more credits and features.
+                        </p>
+                      </div>
                     </div>
+                  </div>
+
+                  <Button 
+                    variant="destructive" 
+                    onClick={handleCancelSubscription}
+                    disabled={isLoading || cancelStatus === 'loading'}
+                    className="w-full"
+                  >
+                    {isLoading || cancelStatus === 'loading' ? (
+                      'Cancelling...'
+                    ) : (
+                      'Cancel Subscription'
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Account Actions */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white">Account Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={logout}
+                    className="w-full justify-start"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Right Side - Benefits */}
+        <div className="flex-1 bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8">
+          <div className="max-w-lg">
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold text-white mb-6">Your VoiceScript AI Benefits</h2>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <Zap className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-white font-semibold mb-1">Lightning Fast Processing</h3>
+                    <p className="text-gray-400">Get your transcripts in seconds with our optimized AI</p>
                   </div>
                 </div>
 
-                <Button 
-                  variant="destructive" 
-                  onClick={handleCancelSubscription}
-                  disabled={isLoading || cancelStatus === 'loading'}
-                  className="w-full"
-                >
-                  {isLoading || cancelStatus === 'loading' ? (
-                    'Cancelling...'
-                  ) : (
-                    'Cancel Subscription'
-                  )}
-                </Button>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                    <Shield className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-white font-semibold mb-1">Secure & Private</h3>
+                    <p className="text-gray-400">Your files are processed securely and never stored</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-white font-semibold mb-1">24/7 Access</h3>
+                    <p className="text-gray-400">Transcribe anytime with our cloud platform</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center">
+                    <Coins className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-white font-semibold mb-1">Flexible Credits</h3>
+                    <p className="text-gray-400">Use your credits whenever you need - they never expire</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-900/50 p-6 rounded-lg">
+              <h3 className="text-xl font-bold text-white mb-4">Need Help?</h3>
+              <p className="text-gray-400 mb-4">
+                Our support team is here to help you get the most out of VoiceScript AI.
+              </p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p>• Email: support@voicescript-ai.com</p>
+                <p>• Response time: Within 24 hours</p>
+                <p>• Available: Monday - Friday, 9AM - 6PM EST</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="lg:hidden">
+        <div className="container mx-auto px-4 py-6 sm:py-8">
+          <Link 
+            href="/app" 
+            className="inline-flex items-center space-x-2 text-gray-400 hover:text-white mb-6 sm:mb-8 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to App</span>
+          </Link>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8 sm:mb-12">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4">Account Settings</h1>
+              <p className="text-base sm:text-lg lg:text-xl text-gray-400 px-4">
+                Manage your subscription, credits, and account preferences
+              </p>
+            </div>
+
+            {/* User Info Card */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-6 sm:mb-8">
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-white flex items-center space-x-2 text-base sm:text-lg">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span>Account Information</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 p-4 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs sm:text-sm text-gray-400">Email</label>
+                    <p className="text-white text-sm sm:text-base truncate">{user?.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs sm:text-sm text-gray-400">Account Created</label>
+                    <p className="text-white text-sm sm:text-base">
+                      {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          )}
 
-          {/* Account Actions */}
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white">Account Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  onClick={logout}
-                  className="w-full justify-start"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            {/* Current Plan Card */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <Crown className="h-5 w-5" />
+                  <span>Current Plan</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-2xl font-bold text-white capitalize">{userProfile?.subscription || 'Free'}</h3>
+                    <p className="text-gray-400">
+                      {userProfile?.subscription === 'basic' ? '$5.99/month' : 'Free'}
+                    </p>
+                  </div>
+                  <Badge variant={userProfile?.subscription === 'basic' ? 'default' : 'secondary'}>
+                    {userProfile?.subscription === 'basic' ? 'Premium' : 'Free'}
+                  </Badge>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold text-white mb-3">What's included:</h4>
+                    <ul className="space-y-2">
+                      {getPlanFeatures(userProfile?.subscription || 'free').map((feature, index) => (
+                        <li key={index} className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-300">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white mb-3">Limitations:</h4>
+                    <ul className="space-y-2">
+                      {getPlanLimitations(userProfile?.subscription || 'free').map((limitation, index) => (
+                        <li key={index} className="flex items-center space-x-2">
+                          <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-400">{limitation}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Credits Card */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <Coins className="h-5 w-5" />
+                  <span>Credits</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-3xl font-bold text-white">{userProfile?.credits || 0}</h3>
+                    <p className="text-gray-400">credits remaining</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-400">Max file duration</p>
+                    <p className="text-lg font-semibold text-white">{userProfile?.maxFileDuration || 1} minutes</p>
+                  </div>
+                </div>
+                
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                  <p className="text-blue-400 text-sm">
+                    <strong>How credits work:</strong> 1 credit = 1 minute of transcription. 
+                    Partial minutes are rounded up.
+                  </p>
+                </div>
+
+                <div className="mt-4 flex space-x-3">
+                  <Link href="/pricing">
+                    <ShinyButton className="bg-blue-600 text-white">
+                      <span className="flex items-center">
+                        <Crown className="h-4 w-4 mr-2" />
+                        Buy More Credits
+                      </span>
+                    </ShinyButton>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Subscription Management */}
+            {userProfile?.subscription === 'basic' && (
+              <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm mb-8">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center space-x-2">
+                    <CreditCard className="h-5 w-5" />
+                    <span>Subscription Management</span>
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Manage your subscription and billing
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {cancelStatus === 'success' && (
+                    <Alert className="mb-4 border-green-500/50 bg-green-500/10">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <AlertDescription className="text-green-400">
+                        {cancelMessage}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {cancelStatus === 'error' && (
+                    <Alert className="mb-4 border-red-500/50 bg-red-500/10">
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                      <AlertDescription className="text-red-400">
+                        {cancelMessage}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mb-4">
+                    <div className="flex items-start space-x-3">
+                      <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-orange-400 mb-2">Cancel Subscription</h4>
+                        <p className="text-orange-300 text-sm mb-3">
+                          Cancelling your subscription will:
+                        </p>
+                        <ul className="text-orange-300 text-sm space-y-1 mb-3">
+                          <li>• Stop future billing</li>
+                          <li>• Keep your remaining credits</li>
+                          <li>• Downgrade to Free plan</li>
+                          <li>• Reduce file duration limit to 1 minute</li>
+                        </ul>
+                        <p className="text-orange-300 text-sm">
+                          You can resubscribe anytime to get more credits and features.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    variant="destructive" 
+                    onClick={handleCancelSubscription}
+                    disabled={isLoading || cancelStatus === 'loading'}
+                    className="w-full"
+                  >
+                    {isLoading || cancelStatus === 'loading' ? (
+                      'Cancelling...'
+                    ) : (
+                      'Cancel Subscription'
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Account Actions */}
+            <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white">Account Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={logout}
+                    className="w-full justify-start"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
